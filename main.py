@@ -1,5 +1,6 @@
 import os
 from argparse import ArgumentParser
+import sys
 import numpy as np
 from mininet.net import Mininet
 from mininet.link import TCLink
@@ -9,6 +10,7 @@ import time
 import json_parse
 import topology
 import switch
+
 
 def experiment(source, target, cmd: str, times):
     target.cmd("iperf -s &")
@@ -22,11 +24,24 @@ def experiment(source, target, cmd: str, times):
     return line
 
 
+def get_traffic_type(t_type: int):
+    if t_type == 1:
+        sizes = [0, 1e5, 2e5, 3e5, 5e5, 8e5, 1e6]
+        probs = [0, 0.175, 0.3, 0.6, 0.9, 0.95, 1]
+    elif t_type == 2:
+        sizes = [180, 300, 460, 575, 590, 600, 645, 710, 820, 910]
+        probs = [0.075, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+    else:
+        print("Incorrect type, exiting program")
+        sys.exit()
+    return sizes, probs
+
+
 def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10, t_time=None, net: Mininet = None):
     data = {}
     full_json = []
 
-    #for intensity in range(1, int(t_intensity) + 1):
+    # for intensity in range(1, int(t_intensity) + 1):
     #    times, lines = [], []
     #    print(f"About {(intensity - 1) * 10}% done")
     #    print(f"Generating traffic for intensity {intensity}")
@@ -57,10 +72,9 @@ def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10,
     print('success!')
     # Write json object to file
 
-
     os.system('sudo chmod 0755 iperf_results.json')
 
-    #make_box_plot()
+    # make_box_plot()
 
 
 def generateFromECDF(x_ecdf, y_ecdf, size=1):
@@ -70,14 +84,14 @@ def generateFromECDF(x_ecdf, y_ecdf, size=1):
 
 
 if __name__ == '__main__':
-    #parser = ArgumentParser(prog="ProgramName", description="DVAD20 Assignment 1", usage='%(prog)s [options]')
-    #parser.add_argument('-s', '--source', help="where packets are sent from", required=False)
-    #parser.add_argument('-S', '--sink', help="where packets are sent to", required=False)
-    #parser.add_argument('-t', '--type', help="type of traffic, 1 for web search, 2 for data mining", required=False)
-    #parser.add_argument('-i', '--intensity', help="how many packets per second", required=False)
-    #parser.add_argument('-T', '--time', help="for how long to run test for", required=False)
+    # parser = ArgumentParser(prog="ProgramName", description="DVAD20 Assignment 1", usage='%(prog)s [options]')
+    # parser.add_argument('-s', '--source', help="where packets are sent from", required=False)
+    # parser.add_argument('-S', '--sink', help="where packets are sent to", required=False)
+    # parser.add_argument('-t', '--type', help="type of traffic, 1 for web search, 2 for data mining", required=False)
+    # parser.add_argument('-i', '--intensity', help="how many packets per second", required=False)
+    # parser.add_argument('-T', '--time', help="for how long to run test for", required=False)
 
-    #args = parser.parse_args()
+    # args = parser.parse_args()
 
     os.system('sudo mn -c')
 
