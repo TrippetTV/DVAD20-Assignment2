@@ -7,19 +7,16 @@ class MyTopology(Topo):
         bw_second = 80
         delay = '1ms'
 
-        host = [self.addHost(f'h{i}') for i in range(1, 17)]
-        switches = [self.addSwitch(f's{i}') for i in range(1, 14)]
+        host = [self.addHost(f'h{i}') for i in range(1, 4 + 1)]
+        switches = [self.addSwitch(f's{i}') for i in range(1, 4 + 1)]
 
-        leaf_switches = switches[:8]
-        middle_switches = switches[8:12]
-        backbone_switch = switches[12]
 
-        for i, host in enumerate(host):
-            self.addLink(host, leaf_switches[i // 2], delay=delay, bw=bw)
+        self.addLink(switches[0], switches[1])
+        self.addLink(switches[0], switches[3])
+        self.addLink(switches[2], switches[1])
+        self.addLink(switches[2], switches[3])
+        self.addLink(switches[1], host[0])
+        self.addLink(switches[1], host[1])
+        self.addLink(switches[3], host[2])
+        self.addLink(switches[3], host[3])
 
-        for i in range(0, 8, 2):
-            self.addLink(leaf_switches[i], middle_switches[i // 2], delay=delay, bw=bw)
-            self.addLink(leaf_switches[i + 1], middle_switches[i // 2], delay=delay, bw=bw)
-
-        for middle_switches in middle_switches:
-            self.addLink(middle_switches, backbone_switch, delay=delay, bw=bw)
