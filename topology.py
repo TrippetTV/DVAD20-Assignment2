@@ -4,19 +4,18 @@ class MyTopology(Topo):
     def build(self):
         # Create Network architecture
         bw = 20
-        bw_second = 80
         delay = '1ms'
 
         host = [self.addHost(f'h{i}') for i in range(1, 4 + 1)]
         switches = [self.addSwitch(f's{i}') for i in range(1, 4 + 1)]
 
 
-        self.addLink(switches[0], switches[1])
-        self.addLink(switches[0], switches[3])
-        self.addLink(switches[2], switches[1])
-        self.addLink(switches[2], switches[3])
-        self.addLink(switches[1], host[0])
-        self.addLink(switches[1], host[1])
-        self.addLink(switches[3], host[2])
-        self.addLink(switches[3], host[3])
+        self.addLink(switches[0], switches[1], bw=bw, delay=delay)
+        self.addLink(switches[0], switches[3], bw=bw, delay=delay)
+        self.addLink(switches[2], switches[1], bw=bw, delay=delay)
+        self.addLink(switches[2], switches[3], bw=bw, delay=delay)
+        self.addLink(switches[1], host[0], bw=bw, delay=delay)
+        self.addLink(switches[1], host[1], bw=bw, delay=delay)
+        self.addLink(switches[3], host[2], bw=bw, delay=delay)
+        self.addLink(switches[3], host[3], bw=bw, delay=delay)
 
