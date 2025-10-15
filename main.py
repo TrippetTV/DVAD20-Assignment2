@@ -38,39 +38,41 @@ def get_traffic_type(t_type: int):
 
 
 def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10, t_time=None, net: Mininet = None):
+    sizes, probs = get_traffic_type(t_type)
+
     data = {}
     full_json = []
 
-    # for intensity in range(1, int(t_intensity) + 1):
-    #    times, lines = [], []
-    #    print(f"About {(intensity - 1) * 10}% done")
-    #    print(f"Generating traffic for intensity {intensity}")
+    for intensity in range(1, int(t_intensity) + 1):
+        times, lines = [], []
+        print(f"About {(intensity - 1) * 10}% done")
+        print(f"Generating traffic for intensity {intensity}")
 
-    #    flow_size = generateFromECDF(sizes, probs, 1)[0]
-    #    for repetition in range(10):
-    #        sender, receiver = np.random.choice(np.arange(1, 17, dtype=np.int32), 2, replace=False)
-    #        source = net.getNodeByName(f"h{sender}")
-    #        target = net.getNodeByName(f"h{receiver}")
+        flow_size = generateFromECDF(sizes, probs, 1)[0]
+        for repetition in range(10):
+            sender, receiver = np.random.choice(np.arange(1, 17, dtype=np.int32), 2, replace=False)
+            source = net.getNodeByName(f"h{sender}")
+            target = net.getNodeByName(f"h{receiver}")
 
-    #        cmd = f"iperf -c {target.IP()} -n {8 * flow_size} --burst-period {1 / intensity} -y c"
-    #        line = experiment(source, target, cmd, times)
-    #        lines.append(line)
+            cmd = f"iperf -c {target.IP()} -n {8 * flow_size} --burst-period {1 / intensity} -y c"
+            line = experiment(source, target, cmd, times)
+            lines.append(line)
 
-    #    data[intensity] = times
+        data[intensity] = times
 
-    #    json_data = process_to_json(lines)
+        json_data = json_parse.process_to_json(lines)
 
-    #    for index, json_object in enumerate(json_data):
-    #        additional_info = {
-    #            'time': data[intensity][index],
-    #            'flows_per_second': intensity
-    #        }
-    #        json_object.update(additional_info)
+        for index, json_object in enumerate(json_data):
+            additional_info = {
+                'time': data[intensity][index],
+                'flows_per_second': intensity
+            }
+            json_object.update(additional_info)
 
-    #    full_json.append(json_data)
+        full_json.append(json_data)
 
     print('success!')
-    # Write json object to file
+    json_parse.json_write_file("iperf_results.json", full_json)
 
     os.system('sudo chmod 0755 iperf_results.json')
 
