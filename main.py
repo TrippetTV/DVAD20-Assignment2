@@ -4,12 +4,14 @@ import sys
 import numpy as np
 from mininet.net import Mininet
 from mininet.link import TCLink
+
 import time
 
 # Local Libraries
 import json_parse
 import topology
 import switch
+
 
 
 def experiment(source, target, cmd: str, times):
@@ -86,19 +88,10 @@ def generateFromECDF(x_ecdf, y_ecdf, size=1):
 
 
 if __name__ == '__main__':
-    # parser = ArgumentParser(prog="ProgramName", description="DVAD20 Assignment 1", usage='%(prog)s [options]')
-    # parser.add_argument('-s', '--source', help="where packets are sent from", required=False)
-    # parser.add_argument('-S', '--sink', help="where packets are sent to", required=False)
-    # parser.add_argument('-t', '--type', help="type of traffic, 1 for web search, 2 for data mining", required=False)
-    # parser.add_argument('-i', '--intensity', help="how many packets per second", required=False)
-    # parser.add_argument('-T', '--time', help="for how long to run test for", required=False)
-
-    # args = parser.parse_args()
-
     os.system('sudo mn -c')
 
     mytopo = topology.MyTopology()
-    net = Mininet(topo=mytopo, link=TCLink)
+    net = Mininet(topo=mytopo, link=TCLink, autoSetMacs=True, autoStaticArp=True)
 
     net.start()
 
