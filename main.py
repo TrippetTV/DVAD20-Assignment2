@@ -1,17 +1,14 @@
 import os
-from argparse import ArgumentParser
 import sys
 import numpy as np
 from mininet.net import Mininet
 from mininet.link import TCLink
-
 import time
 
 # Local Libraries
 import json_parse
 import topology
 import switch
-
 
 
 def experiment(source, target, cmd: str, times):
