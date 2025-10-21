@@ -4,6 +4,7 @@ import numpy as np
 from mininet.net import Mininet
 from mininet.link import TCLink
 import time
+from mininet.node import RemoteController
 
 # Local Libraries
 import json_parse
@@ -88,11 +89,11 @@ if __name__ == '__main__':
     os.system('sudo mn -c')
 
     mytopo = topology.MyTopology()
-    net = Mininet(topo=mytopo, link=TCLink, autoSetMacs=True, autoStaticArp=True)
+    net = Mininet(topo=mytopo, link=TCLink, autoSetMacs=True, autoStaticArp=True, controller=RemoteController)
 
     net.start()
 
-    genDCTraffic(t_type=1, net=net)
-    genDCTraffic(t_type=2, net=net)
+    #genDCTraffic(t_type=1, net=net)
+    #genDCTraffic(t_type=2, net=net)
 
     net.stop()
