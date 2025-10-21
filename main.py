@@ -4,7 +4,7 @@ import time
 import numpy as np
 from mininet.net import Mininet
 from mininet.link import TCLink
-from mininet.node import Ryu, OVSSwitch
+from mininet.node import RemoteController, OVSSwitch
 
 
 # Local Libraries
@@ -87,15 +87,16 @@ def generateFromECDF(x_ecdf, y_ecdf, size=1):
 
 
 if __name__ == '__main__':
-    os.system('sudo mn -c')
+    #os.system('sudo mn -c')
 
     mytopo = topology.MyTopology()
     net = Mininet(topo=mytopo,
                   link=TCLink,
                   autoSetMacs=True,
                   autoStaticArp=True,
-                  controller=Ryu,
-                  switch=OVSSwitch)
+                  controller=RemoteController
+                  )
+
 
     net.start()
 
