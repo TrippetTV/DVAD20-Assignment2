@@ -102,4 +102,5 @@ if __name__ == '__main__':
     #genDCTraffic(t_type=1, net=net)
     #genDCTraffic(t_type=2, net=net)
 
+    net.interact()
     net.stop()
