@@ -1,15 +1,16 @@
 import os
 import sys
+import time
 import numpy as np
 from mininet.net import Mininet
 from mininet.link import TCLink
-import time
-from mininet.node import RemoteController
+from mininet.node import Ryu, OVSSwitch
+
 
 # Local Libraries
 import json_parse
 import topology
-import switch
+
 
 
 def experiment(source, target, cmd: str, times):
@@ -89,7 +90,12 @@ if __name__ == '__main__':
     os.system('sudo mn -c')
 
     mytopo = topology.MyTopology()
-    net = Mininet(topo=mytopo, link=TCLink, autoSetMacs=True, autoStaticArp=True, controller=RemoteController)
+    net = Mininet(topo=mytopo,
+                  link=TCLink,
+                  autoSetMacs=True,
+                  autoStaticArp=True,
+                  controller=Ryu,
+                  switch=OVSSwitch)
 
     net.start()
 
