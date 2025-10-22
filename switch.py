@@ -86,7 +86,7 @@ class SimpleSwitch(app_manager.RyuApp):
         dpid = datapath.id
         self.mac_to_port.setdefault(dpid, {})
 
-        self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        #self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
         # learn a mac address to avoid FLOOD next time.
         self.mac_to_port[dpid][src] = in_port
@@ -108,7 +108,7 @@ class SimpleSwitch(app_manager.RyuApp):
             if self.s4 > 16:
                 self.s4 = 0
 
-            print(f"out port: {out_port}")
+            #print(f"out port: {out_port}")
 
         actions = [parser.OFPActionOutput(out_port)]
 
