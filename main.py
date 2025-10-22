@@ -39,7 +39,7 @@ def get_traffic_type(t_type: int):
         sys.exit()
     return sizes, probs
 
-def make_box_plot(filename: str = "iperf_results.json"):
+def make_box_plot(filename: str):
     with open(filename, 'r') as file:
         data = json.load(file)
 
@@ -122,7 +122,7 @@ def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10,
 
     os.system(f'sudo chmod 0755 {filename}')
 
-    make_box_plot()
+    make_box_plot(filename)
 
 
 def generateFromECDF(x_ecdf, y_ecdf, size=1):
