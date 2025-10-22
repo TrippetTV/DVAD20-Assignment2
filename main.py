@@ -79,7 +79,9 @@ def make_box_plot(filename: str = "iperf_results.json"):
 
     plt.tight_layout()
 
-    plt.savefig('flow_completion_time_boxplot.pdf', bbox_inches='tight', dpi=300,format='pdf')
+
+
+    plt.savefig(f'{filename.split(".")[0]}_boxplot.pdf', bbox_inches='tight', dpi=300,format='pdf')
 
 def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10, t_time=None, net: Mininet = None, filename: str = "iperf_results.json"):
     sizes, probs = get_traffic_type(t_type)
