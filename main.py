@@ -39,49 +39,7 @@ def get_traffic_type(t_type: int):
         sys.exit()
     return sizes, probs
 
-def make_box_plot(filename: str):
-    with open(filename, 'r') as file:
-        data = json.load(file)
 
-    flow_rates = []
-    times = []
-
-    for intensity_group in data:
-        if intensity_group:
-            flow_rate = intensity_group[0]['flows_per_second']
-            flow_rates.append(flow_rate)
-
-            time_values = [entry['time'] for entry in intensity_group]
-            times.append(time_values)
-
-    plt.figure(figsize=(6, 6))
-    box_plot = plt.boxplot(times,
-                           labels=[f'{rate:.0f}' for rate in flow_rates],
-                           patch_artist=True)
-
-    for box in box_plot['boxes']:
-        box.set(facecolor='lightblue', alpha=0.7)
-
-    for median in box_plot['medians']:
-        median.set(color='darkred', linewidth=2)
-
-    for whisker in box_plot['whiskers']:
-        whisker.set(color='gray', linestyle='--')
-
-    for cap in box_plot['caps']:
-        cap.set(color='gray')
-
-    plt.xlabel('Flows per Second (s)')
-    plt.ylabel('Flow Completion Time (s)')
-    plt.title('Flow Completion Time vs Traffic Intensity')
-    plt.xticks(rotation=45)
-    plt.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-
-
-
-    plt.savefig(f'{filename.split(".")[0]}_boxplot.pdf', bbox_inches='tight', dpi=300,format='pdf')
 
 def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10, t_time=None, net: Mininet = None, filename: str = "iperf_results.json"):
     sizes, probs = get_traffic_type(t_type)
@@ -120,9 +78,8 @@ def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10,
     print('success!')
     json_parse.json_write_file(filename, full_json)
 
-    os.system(f'sudo chmod 0755 {filename}')
-
-    make_box_plot(filename)
+    json_parse.make_box_plot(filename)
+    os.system(f'sudo chmod ugo+rwx {filename}')
 
 
 def generateFromECDF(x_ecdf, y_ecdf, size=1):

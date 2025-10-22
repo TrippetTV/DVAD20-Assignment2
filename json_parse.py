@@ -2,8 +2,8 @@ import json
 import matplotlib.pyplot as plt
 
 
-def make_box_plot():
-    with open('iperf_results.json', 'r') as file:
+def make_box_plot(filename: str):
+    with open(filename, 'r') as file:
         data = json.load(file)
 
     flow_rates = []
@@ -42,8 +42,7 @@ def make_box_plot():
 
     plt.tight_layout()
 
-    plt.savefig('flow_completion_time_boxplot.pdf', bbox_inches='tight', dpi=300,format='pdf')
-    plt.show()
+    plt.savefig(f'{filename.split(".")[0]}_boxplot.pdf', bbox_inches='tight', dpi=300,format='pdf')
 
 
 def process_line_to_json(line):
