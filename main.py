@@ -1,7 +1,9 @@
+import json
 import os
 import sys
 import time
 import numpy as np
+from matplotlib import pyplot as plt
 from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.node import RemoteController, OVSSwitch
@@ -37,8 +39,50 @@ def get_traffic_type(t_type: int):
         sys.exit()
     return sizes, probs
 
+def make_box_plot(filename: str = "iperf_results.json"):
+    with open(filename, 'r') as file:
+        data = json.load(file)
 
-def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10, t_time=None, net: Mininet = None):
+    flow_rates = []
+    times = []
+
+    for intensity_group in data:
+        if intensity_group:
+            flow_rate = intensity_group[0]['flows_per_second']
+            flow_rates.append(flow_rate)
+
+            time_values = [entry['time'] for entry in intensity_group]
+            times.append(time_values)
+
+    plt.figure(figsize=(6, 6))
+    box_plot = plt.boxplot(times,
+                           labels=[f'{rate:.0f}' for rate in flow_rates],
+                           patch_artist=True)
+
+    for box in box_plot['boxes']:
+        box.set(facecolor='lightblue', alpha=0.7)
+
+    for median in box_plot['medians']:
+        median.set(color='darkred', linewidth=2)
+
+    for whisker in box_plot['whiskers']:
+        whisker.set(color='gray', linestyle='--')
+
+    for cap in box_plot['caps']:
+        cap.set(color='gray')
+
+    plt.xlabel('Flows per Second (s)')
+    plt.ylabel('Flow Completion Time (s)')
+    plt.title('Flow Completion Time vs Traffic Intensity')
+    plt.xticks(rotation=45)
+    plt.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+
+    plt.savefig('flow_completion_time_boxplot.pdf', bbox_inches='tight', dpi=300,format='pdf')
+    plt.show()
+
+def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10, t_time=None, net: Mininet = None, filename: str = "iperf_results.json"):
     sizes, probs = get_traffic_type(t_type)
 
     data = {}
@@ -73,11 +117,11 @@ def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10,
         full_json.append(json_data)
 
     print('success!')
-    json_parse.json_write_file("iperf_results.json", full_json)
+    json_parse.json_write_file(filename, full_json)
 
-    os.system('sudo chmod 0755 iperf_results.json')
+    os.system(f'sudo chmod 0755 {filename}')
 
-    # make_box_plot()
+    make_box_plot()
 
 
 def generateFromECDF(x_ecdf, y_ecdf, size=1):
@@ -102,7 +146,7 @@ if __name__ == '__main__':
 
     net.pingAll()
 
-    genDCTraffic(t_type=1, net=net)
-    genDCTraffic(t_type=2, net=net)
+    genDCTraffic(t_type=1, net=net, filename="datamining.json")
+    genDCTraffic(t_type=2, net=net, filename="websearch.json")
 
     net.stop()
