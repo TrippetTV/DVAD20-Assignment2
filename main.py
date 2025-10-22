@@ -88,6 +88,7 @@ def generateFromECDF(x_ecdf, y_ecdf, size=1):
 
 if __name__ == '__main__':
 
+
     mytopo = topology.MyTopology()
     net = Mininet(topo=mytopo,
                   link=TCLink,
@@ -98,6 +99,8 @@ if __name__ == '__main__':
 
 
     net.start()
+
+    net.pingAll()
 
     genDCTraffic(t_type=1, net=net)
     genDCTraffic(t_type=2, net=net)
