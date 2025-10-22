@@ -8,15 +8,28 @@ from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 from ryu.lib.packet import ipv4
 
+
 class SimpleSwitch(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
 
-    s2 = False
-    s4 = False
+    s2 = 0
+    s4 = 0
 
     def __init__(self, *args, **kwargs):
         super(SimpleSwitch, self).__init__(*args, **kwargs)
-        self.mac_to_port = {}
+        self.mac_to_port = {
+            2: {
+                '00:00:00:00:00:01': 3,  # HOST1
+                '00:00:00:00:00:02': 4,  # HOST2
+
+            },
+            4: {
+                '00:00:00:00:00:03': 3,  # HOST3
+                '00:00:00:00:00:04': 4,  # HOST4
+            },
+            1: {},
+            3: {}
+        }
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
@@ -67,6 +80,9 @@ class SimpleSwitch(app_manager.RyuApp):
         dst = eth.dst
         src = eth.src
 
+        if dst.startswith("33:33") or src.startswith("33:33"):
+            return
+
         dpid = datapath.id
         self.mac_to_port.setdefault(dpid, {})
 
@@ -75,17 +91,25 @@ class SimpleSwitch(app_manager.RyuApp):
         # learn a mac address to avoid FLOOD next time.
         self.mac_to_port[dpid][src] = in_port
 
-        # TODO: Make round robin changes from here
-
-
-
-        #if self.name == "s2":
-        print(f"{self.mac_to_port[dpid]}")
-
         if dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][dst]
         else:
-            out_port = ofproto.OFPP_FLOOD
+            # TODO: Round Robin
+            if datapath.id == 2:
+                out_port = (self.s2 % 4) + 1
+                self.s2 += 1
+            if datapath.id == 4:
+                out_port = (self.s4 % 4) + 1
+                self.s4 += 1
+            else:
+                out_port = ofproto.OFPP_FLOOD
+
+            if self.s2 > 16:
+                self.s2 = 0
+            if self.s4 > 16:
+                self.s4 = 0
+
+            print(f"out port: {out_port}")
 
         actions = [parser.OFPActionOutput(out_port)]
 
