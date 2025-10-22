@@ -51,7 +51,7 @@ def genDCTraffic(t_source=None, t_sink=None, t_type: int = None, t_intensity=10,
 
         flow_size = generateFromECDF(sizes, probs, 1)[0]
         for repetition in range(10):
-            sender, receiver = np.random.choice(np.arange(1, 17, dtype=np.int32), 2, replace=False)
+            sender, receiver = np.random.choice(np.arange(1, 5, dtype=np.int32), 2, replace=False)
             source = net.getNodeByName(f"h{sender}")
             target = net.getNodeByName(f"h{receiver}")
 
