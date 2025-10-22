@@ -94,7 +94,6 @@ class SimpleSwitch(app_manager.RyuApp):
         if dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][dst]
         else:
-            # TODO: Round Robin
             if datapath.id == 2:
                 out_port = (self.s2 % 4) + 1
                 self.s2 += 1
